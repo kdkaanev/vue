@@ -15,7 +15,6 @@ export default {
 
 <template>
   <h1>Components examples</h1>
-  <ButtonCounter title="some title" text="I was clicked x: " />
-  <ButtonCounter title="some title" :text="customText" />
-  <ButtonCounter title="some title" text="1" />
+  <ButtonCounter title="Some title" text="I was clicked x: " />
+  <ButtonCounter text="1234" disabled />
 </template>
