@@ -14,6 +14,7 @@ export default {
     },
     disabled: Boolean,
   },
+  emits: ['wasIncremented'],
   data() {
     return {
       count: 0,
@@ -22,6 +23,7 @@ export default {
   methods: {
     onClick() {
       this.count += 1;
+      this.$emit('wasIncremented', this.count);
     },
   },
 };

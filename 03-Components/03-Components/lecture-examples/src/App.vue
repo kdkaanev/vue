@@ -15,6 +15,6 @@ export default {
 
 <template>
   <h1>Components examples</h1>
-  <ButtonCounter title="Some title" text="I was clicked x: " />
+  <ButtonCounter title-text="Some title" text="I was clicked x: " @was-incremented="(arg) => console.log('wasIncremented')" />
   <ButtonCounter text="1234" disabled />
 </template>
