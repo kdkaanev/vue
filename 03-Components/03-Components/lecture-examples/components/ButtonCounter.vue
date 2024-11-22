@@ -20,6 +20,22 @@ export default {
       count: 0,
     };
   },
+  beforeCreate() {
+    console.log('I was before created', this.count, this.text);
+  },
+  created() {
+    console.log('I was created', this.count, this.text);
+  },
+
+  mounted() {
+    console.log('I was mounted', this.count, this.text);
+  },
+  beforeUpdate() {
+    console.log('I was before update', this.count, this.text);
+  },
+  updated() {
+    console.log('I was update', this.count, this.text);
+  },
   methods: {
     onClick() {
       this.count += 1;
