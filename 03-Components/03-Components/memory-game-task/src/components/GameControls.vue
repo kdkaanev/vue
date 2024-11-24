@@ -1,5 +1,5 @@
 <script>
-const GAME_TIME = 5;
+const GAME_TIME = 30;
 let interval;
 export default {
   props: {

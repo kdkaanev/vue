@@ -20,25 +20,47 @@ export default {
     return {
       isPlaying: false,
       cards: structuredClone(CARDS),
+      matchedCards: [],
+      previousCardName: '',
     };
   },
   methods: {
-    onStart() {
-      this.isPlaying = true;
-    },
-    onStop() {
+    resetState() {
       this.isPlaying = false;
       this.cards = structuredClone(CARDS);
+      this.matchedCards = [];
+      this.previousCardName = '';
+    },
+    onStart() {
+      this.isPlaying = true;
+      this.cards = structuredClone(CARDS);
+    },
+    onStop() {
+      this.resetState();
     },
     onFlip(cardId) {
       if (!this.isPlaying)
         return;
+      const numberOfFliped = this.cards.filter(card => card.isFlipped).length;
+      if (numberOfFliped === 2) {
+        this.cards.forEach(card => card.isFlipped = false);
+      }
       const selectedCard = this.cards.find(el => el.id === cardId);
       if (!selectedCard)
         return;
 
       selectedCard.isFlipped = !selectedCard.isFlipped;
+
+      if (!this.previousCardName) {
+        this.previousCardName = selectedCard.name;
+        return;
+      }
+      if (this.previousCardName === selectedCard.name) {
+        this.matchedCards.push(selectedCard.name);
+      }
+      this.previousCardName = null;
     },
+
   },
 };
 </script>
