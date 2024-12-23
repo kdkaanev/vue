@@ -7,6 +7,7 @@ import Contacts from './pages/Contacts.vue';
 import Home from './pages/Home.vue';
 // import ComponentsStarter from './components/ComponentsStarter.vue';
 import Products from './pages/Product/components/Products.vue';
+import Register from './pages/Register/Register.vue';
 
 export default {
   components: {
@@ -17,6 +18,7 @@ export default {
     Home,
     Contacts,
     About,
+    Register,
 
   },
   data() {
