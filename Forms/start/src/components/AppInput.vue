@@ -25,7 +25,9 @@ export default {
 <template>
   <fieldset :disabled="disabled">
     <label :for="id">{{ name }}</label>
-    <input :id="id" type="text" :placeholder="placeholder" :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)">
+    <input
+      :id="id" type="text" :placeholder="placeholder" :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)"
+    >
   </fieldset>
 </template>

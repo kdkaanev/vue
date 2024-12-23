@@ -2,9 +2,11 @@
 import AppInput from './components/AppInput.vue';
 import AppNamesInput from './components/AppNamesInput.vue';
 import BasicExample from './components/BasicExample.vue';
+import RegistrationForm from './components/RegistrationForm.vue';
 
 export default {
   components: {
+    RegistrationForm,
     BasicExample,
     AppInput,
     AppNamesInput,
@@ -21,6 +23,7 @@ export default {
 </script>
 
 <template>
+  <RegistrationForm />
   <BasicExample />
 
   <AppInput id="example1" v-model="customText" placeholder="Write someting" name="My custom component" />
