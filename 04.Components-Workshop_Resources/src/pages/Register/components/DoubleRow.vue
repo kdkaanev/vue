@@ -11,13 +11,13 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="d">
     <slot />
   </div>
 </template>
 
 <style scoped>
-div {
+.d{
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: v-bind(gap);

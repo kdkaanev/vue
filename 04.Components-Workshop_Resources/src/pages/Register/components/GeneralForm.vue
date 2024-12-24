@@ -1,51 +1,155 @@
 <script>
+import useVuelidate from '@vuelidate/core';
+import { alphaNum, email, helpers, maxLength, minLength, numeric, required, sameAs } from '@vuelidate/validators';
 import DoubleRow from './DoubleRow.vue';
 import FormFieldSet from './FormFieldSet.vue';
 
+const separedNames = helpers.regex(/^[A-Z][a-z]+ [A-Z][a-z]+$/,
+);
+function minimalAge(minAge) {
+  return helpers.withParams(
+    { minAge },
+    (value) => {
+      const age = new Date(new Date() - new Date(value)).getFullYear() - 1970;
+      return age > minAge;
+    },
+  );
+}
+
 export default {
-  compoments: {
+  components: {
     FormFieldSet,
     DoubleRow,
+  },
+  emits: ['next'],
+  setup() {
+    return {
+      v$: useVuelidate(),
+    };
+  },
+  data() {
+    return {
+      formData: {
+        name: '',
+        password: '',
+        confirmPassword: '',
+        email: '',
+        phone: '',
+        gender: '',
+        dateOfbirth: '',
+
+      },
+    };
+  },
+
+  validations() {
+    return {
+      formData: {
+        name: {
+          required,
+          separedNames: helpers.withMessage('Field must contain two names (letters only) separated by a space. Both should start with a capital letter', separedNames),
+        },
+        password: {
+          required,
+          minLengt: minLength(3),
+          maxLength: maxLength(16),
+          alphaNum,
+        },
+        confirmPassword: {
+          sameAsPassword: sameAs(this.formData.password),
+        },
+        email: { required, email },
+        phone: {
+          required,
+          numeric,
+          minLengt: minLength(9),
+          maxLength: maxLength(9),
+        },
+        gender: { required },
+        dateOfbirth: {
+          required,
+          minimalAge:
+          helpers.withMessage(
+            ({
+              $params,
+            }) => `You need to be at a minimum ${$params.minAge}+ years old!`,
+            minimalAge(13),
+          ),
+        },
+      },
+    };
+  },
+  watch: {
+    data: {
+      handler(newVal, oldVal) {
+        const areSame = oldVal && (JSON.stringify(Object.entries(newVal).sort()) === JSON.stringify(Object.entries(oldVal).sort()));
+        if (!areSame) {
+          this.initState(newVal);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
+  methods: {
+    async onSubmit() {
+      const isValid = await this.v$.$validate();
+      if (isValid) {
+        this.$emit('next', this.formData);
+      }
+    },
+    initState(dataPropVal) {
+      this.formData = {
+        name: dataPropVal.name,
+        password: dataPropVal.password,
+        confirmPassword: dataPropVal.confirmPassword,
+        email: dataPropVal.email,
+        phone: dataPropVal.phone,
+        gender: dataPropVal.gender,
+        dateOfbirth: dataPropVal.dateOfbirth,
+
+      };
+    },
   },
 };
 </script>
 
 <template>
-  <form>
-    <FormFieldSet title="Name">
+  <form @submit.prevent="onSubmit">
+    <FormFieldSet title="Name" :errors="v$.formData.name.$errors">
       <input
-        type="text" placeholder="Jane Doe ..."
+        v-model="formData.name" type="text" placeholder="Jane Doe ..." @blur="v$.formData.name.$touch"
       >
     </FormFieldSet>
     <DoubleRow>
-      <FormFieldSet title="Password">
+      <FormFieldSet title="Password" :errors="v$.formData.password.$errors">
         <input
-          type="password" placeholder="Strong password ..."
+          v-model="v$.formData.password.$model" type="password" placeholder="Strong password ... "
         >
       </FormFieldSet>
-      <FormFieldSet title="Comfirm">
+      <FormFieldSet title="Comfirm" :errors="v$.formData.confirmPassword.$errors">
         <input
-          type="password" placeholder="Comfirm password ..."
-        >
-      </FormFieldSet>
-    </DoubleRow>
-
-    <DoubleRow>
-      <FormFieldSet title="Email">
-        <input
-          type="email" placeholder="janedow@gmail.com ..."
-        >
-      </FormFieldSet>
-      <FormFieldSet title="Phone Number">
-        <input
-          type="text" placeholder="359 999 999 ..."
+          v-model="v$.formData.confirmPassword.$model" type="password" placeholder="Comfirm password ..."
         >
       </FormFieldSet>
     </DoubleRow>
 
     <DoubleRow>
-      <FormFieldSet title="Gender">
-        <select>
+      <FormFieldSet title="Email" :errors="v$.formData.email.$errors">
+        <input
+          v-model="v$.formData.email.$model" type="email" placeholder="janedow@gmail.com ..."
+        >
+      </FormFieldSet>
+      <FormFieldSet title="Phone Number" :errors="v$.formData.phone.$errors">
+        <input
+          v-model.number="v$.formData.phone.$model" type="text" placeholder="359 999 999 ..."
+        >
+      </FormFieldSet>
+    </DoubleRow>
+
+    <DoubleRow>
+      <FormFieldSet title="Gender" :errors="v$.formData.gender.$errors">
+        <select v-model="v$.formData.gender.$model">
           <option value="">
             Select gender
           </option>
@@ -60,18 +164,26 @@ export default {
           </option>
         </select>
       </FormFieldSet>
-      <FormFieldSet title="Date of Birth">
+      <FormFieldSet title="Date of Birth" :errors="v$.formData.dateOfbirth.$errors">
         <input
-          type="date" placeholder="dd/mm/yyyy ..."
+          v-model="v$.formData.dateOfbirth.$model"
+          type="date" placeholder="111111111"
         >
       </FormFieldSet>
     </DoubleRow>
+
+    <button type="submit" class="primary">
+      NEXT
+    </button>
   </form>
 </template>
 
-<style>
+<style scoped>
 form {
     display: grid;
     gap: 1rem;
+}
+input, select{
+  margin: 0;
 }
 </style>
