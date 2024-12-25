@@ -17,6 +17,12 @@ export default {
         email: '',
         phone: '',
         gender: '',
+        dateOfbird: '',
+        address1: '',
+        address2: '',
+        city: '',
+        zip: null,
+        country: '',
         payment: '',
         note: '',
 
@@ -39,6 +45,13 @@ export default {
     goPrevious() {
       this.activeStep = 'general';
     },
+    handlePrevious(generalData) {
+      this.userInformation = {
+        ...this.userInformation,
+        ...generalData,
+      };
+      this.goPrevious();
+    },
     onSubmit(generalData) {
       this.userInformation = {
         ...this.userInformation,
@@ -59,7 +72,7 @@ export default {
         </h1>
       </header>
       <GeneralForm v-if="activeStep === 'general'" :data="userInformation" @next="onNextStep" />
-      <AddressForm v-else :data="userInformation" @previous="goPrevious" @submit="onSubmit" />
+      <AddressForm v-else :data="userInformation" @previous="handlePrevious" @submit="onSubmit" />
     </article>
   </section>
 </template>

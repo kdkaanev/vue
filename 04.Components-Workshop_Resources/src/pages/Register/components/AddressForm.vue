@@ -9,6 +9,12 @@ export default {
     FormFieldSet,
     DoubleRow,
   },
+  props: {
+    data: {
+      type: Object,
+      required: true,
+    },
+  },
   emits: ['previous', 'submit'],
   setup() {
     return {
@@ -21,7 +27,7 @@ export default {
         address1: '',
         address2: '',
         city: '',
-        ZIP: null,
+        zip: null,
         country: '',
         payment: '',
         note: '',
@@ -39,12 +45,39 @@ export default {
       },
     };
   },
+  watch: {
+    data: {
+      handler(newVal, oldVal) {
+        const areSame = oldVal && (JSON.stringify(Object.entries(newVal).sort()) === JSON.stringify(Object.entries(oldVal).sort()));
+        if (!areSame) {
+          this.initState(newVal);
+        }
+      },
+
+      deep: true,
+      immediate: true,
+    },
+  },
   methods: {
     async onSubmit() {
       const isValid = await this.v$.$validate();
       if (isValid) {
         this.$emit('submit', this.formData);
       }
+    },
+
+    initState(dataPropVal) {
+      this.formData = {
+
+        address1: dataPropVal.address1,
+        address2: dataPropVal.address2,
+        city: dataPropVal.address2,
+        zip: dataPropVal.zip,
+        country: dataPropVal.country,
+        payment: dataPropVal.payment,
+        note: dataPropVal.note,
+
+      };
     },
   },
 };
@@ -54,7 +87,7 @@ export default {
   <form @submit.prevent="onSubmit">
     <FormFieldSet title="Address line 1" :errors="v$.formData.address1.$errors">
       <input
-        v-model="v$.formData.address1.$model" type="text" placeholder="Jane Doe ..." @blur="v$.formData.name.$touch"
+        v-model="v$.formData.address1.$model" type="text" placeholder="Jane Doe ..."
       >
     </FormFieldSet>
     <FormFieldSet title="Address line 2" :errors="[]">
@@ -64,7 +97,7 @@ export default {
     </FormFieldSet>
 
     <DoubleRow>
-      <button type="button" class="secondary" @click="$emit('previous')">
+      <button type="button" class="secondary" @click="$emit('previous', formData)">
         Previous
       </button>
       <button type="submit" class="primary">
