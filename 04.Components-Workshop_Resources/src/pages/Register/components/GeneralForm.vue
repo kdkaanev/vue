@@ -21,6 +21,12 @@ export default {
     FormFieldSet,
     DoubleRow,
   },
+  props: {
+    data: {
+      type: Object,
+      required: true,
+    },
+  },
   emits: ['next'],
   setup() {
     return {
@@ -87,6 +93,7 @@ export default {
           this.initState(newVal);
         }
       },
+
       deep: true,
       immediate: true,
     },
@@ -100,6 +107,7 @@ export default {
     },
     initState(dataPropVal) {
       this.formData = {
+
         name: dataPropVal.name,
         password: dataPropVal.password,
         confirmPassword: dataPropVal.confirmPassword,

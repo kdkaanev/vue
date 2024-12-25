@@ -7,12 +7,7 @@ export default {
     GeneralForm,
     AddressForm,
   },
-  props: {
-    data: {
-      type: Object,
-      required: true,
-    },
-  },
+
   data() {
     return {
       userInformation: {
@@ -35,6 +30,7 @@ export default {
         ...this.userInformation,
         ...generalData,
       };
+
       this.goNext();
     },
     goNext() {
