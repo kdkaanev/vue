@@ -2,6 +2,28 @@
 import AddressForm from './components/AddressForm.vue';
 import GeneralForm from './components/GeneralForm.vue';
 
+function initUserInfo() {
+  return {
+    userInformation: {
+      name: '',
+      password: '',
+      confirmPassword: '',
+      email: '',
+      phone: '',
+      gender: '',
+      dateOfbird: '',
+      address1: '',
+      address2: '',
+      city: '',
+      zip: null,
+      country: '',
+      payment: '',
+      note: '',
+
+    },
+  };
+}
+
 export default {
   components: {
     GeneralForm,
@@ -10,23 +32,7 @@ export default {
 
   data() {
     return {
-      userInformation: {
-        name: '',
-        password: '',
-        confirmPassword: '',
-        email: '',
-        phone: '',
-        gender: '',
-        dateOfbird: '',
-        address1: '',
-        address2: '',
-        city: '',
-        zip: null,
-        country: '',
-        payment: '',
-        note: '',
-
-      },
+      userInformation: initUserInfo(),
       activeStep: 'general',
     };
   },
@@ -58,6 +64,11 @@ export default {
         ...generalData,
       };
       console.log('I WAS FINALLY SUBMITED', this.userInformation);
+      this.resetForm();
+    },
+    resetForm() {
+      this.userInformation = initUserInfo();
+      this.activeStep = 'general';
     },
   },
 };

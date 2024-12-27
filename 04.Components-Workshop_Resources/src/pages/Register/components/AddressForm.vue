@@ -75,7 +75,6 @@ export default {
   methods: {
     async onSubmit() {
       const isValid = await this.v$.$validate();
-      console.log('isValid', isValid);
       if (isValid) {
         this.$emit('submit', this.formData);
       }
