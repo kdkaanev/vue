@@ -1,11 +1,18 @@
 <script>
+import { mapActions, mapState } from 'pinia';
 import { useCountStore } from '../stores/useCountStore';
 
 export default {
-  data() {
-    return {
-      countStore: useCountStore(),
-    };
+  // setup() {
+  //   return {
+  //     countStore: useCountStore(),
+  //   };
+  // },
+  computed: {
+    ...mapState(useCountStore, ['count', 'doubleCount']),
+  },
+  methods: {
+    ...mapActions(useCountStore, ['increment']),
   },
 };
 </script>
@@ -16,10 +23,15 @@ export default {
     <h1>{{ msg }}</h1>
 
     <div class="card">
-      <button type="button" @click="countStore.increment">
+      <!-- <button type="button" @click="countStore.increment">
         count is {{ countStore.count }}
       </button>
-      <h1> double count is {{ countStore.doubleCount }}</h1>
+      <h1> double count is {{ countStore.doubleCount }}</h1> -->
+
+      <button type="button" @click="increment">
+        count is {{ count }}
+      </button>
+      <h1> double count is {{ doubleCount }}</h1>
       <p>
         Edit
         <code>components/HelloWorld.vue</code> to test HMR
