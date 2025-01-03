@@ -172,6 +172,7 @@ export default {
 
 .dropdown-button-text {
   flex-grow: 1;
+  color: red;
 }
 
 .dropdown-icon {

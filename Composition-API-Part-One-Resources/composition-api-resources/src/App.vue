@@ -1,19 +1,24 @@
-<script>
+<script setup>
 // import HelloWorld from './components/HelloWorld.vue';
-// import ProductsSelector from './components/ProductsSelector.vue';
-import SimpleComposition from './components/SimpleComposition.vue';
-
-export default {
-  components: {
-    // HelloWorld,
-    // ProductsSelector,
-    SimpleComposition,
-  },
-};
+import ProductSelectorCompApi from './components/ProductSelectorCompApi.vue';
+import ProductsSelector from './components/ProductsSelector.vue';
+// import SimpleComposition from './components/SimpleComposition.vue';
 </script>
 
 <template>
-  <!-- <HelloWorld />
-  <ProductsSelector /> -->
-  <SimpleComposition :initial-count="10" @increment="console.log('I was increment', $event)"/>
+  <!-- <HelloWorld /> -->
+  <div class="container">
+    <ProductsSelector />
+    <ProductSelectorCompApi />
+  </div>
+  <!-- <SimpleComposition :initial-count="10" @increment="console.log('I was increment', $event)"/> -->
 </template>
+
+<style>
+.container {
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+</style>
