@@ -1,5 +1,6 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useFetch } from '../composables/useFetch';
 
 const products = ref([]);
 const selectedProducts = ref([]);
@@ -43,98 +44,124 @@ async function fetchProducts() {
     loading.value = false;
   }
 }
-fetchProducts();
+// fetchProducts();
+
+onMounted(async () => {
+  await fetchProducts();
+});
+
+// EXAMPLE WHIT COMPOSABLE & USERS
+
+const { data, isLoading, hasError, reset, reFetch } = useFetch('https://dummyjson.com/users');
 </script>
 
 <template>
-  <div class="product-selector">
-    <h2 class="selector-title">
-      Select Products - COMPOSIONS API🔥
-    </h2>
+  <section>
+    <div class="product-selector">
+      <h2 class="selector-title">
+        Select Products - COMPOSIONS API🔥
+      </h2>
 
-    <div class="dropdown-container">
-      <button
-        class="dropdown-button"
-        @click="toggleDropdown"
-      >
-        <span class="dropdown-button-text">
-          {{ selectedProducts.length > 0
-            ? `${selectedProducts.length} product(s) selected`
-            : 'Select Products'
-          }}
-        </span>
-        <span
-          class="dropdown-icon"
-          :class="{ 'icon-rotated': isDropdownOpen }"
+      <div class="dropdown-container">
+        <button
+          class="dropdown-button"
+          @click="toggleDropdown"
         >
-          🔻
-        </span>
-      </button>
-
-      <div
-        v-if="isDropdownOpen"
-        class="dropdown-menu"
-      >
-        <div class="search-container">
-          <input
-            v-model="searchTerm"
-            placeholder="Search products..."
-            class="search-input"
+          <span class="dropdown-button-text">
+            {{ selectedProducts.length > 0
+              ? `${selectedProducts.length} product(s) selected`
+              : 'Select Products'
+            }}
+          </span>
+          <span
+            class="dropdown-icon"
+            :class="{ 'icon-rotated': isDropdownOpen }"
           >
-        </div>
+            🔻
+          </span>
+        </button>
 
-        <div v-if="loading" class="loading-message">
-          Loading products...
-        </div>
-
-        <div v-else-if="filteredProducts.length === 0" class="no-products-message">
-          No products found
-        </div>
-
-        <div v-else class="products-list">
-          <label
-            v-for="product in filteredProducts"
-            :key="product.id"
-            class="product-item"
-          >
+        <div
+          v-if="isDropdownOpen"
+          class="dropdown-menu"
+        >
+          <div class="search-container">
             <input
-              v-model="selectedProducts"
-              type="checkbox"
-              :value="product.id"
-              class="product-checkbox"
+              v-model="searchTerm"
+              placeholder="Search products..."
+              class="search-input"
             >
-            <img
-              :src="product.thumbnail"
-              :alt="product.title"
-              class="product-thumbnail"
+          </div>
+
+          <div v-if="loading" class="loading-message">
+            Loading products...
+          </div>
+
+          <div v-else-if="filteredProducts.length === 0" class="no-products-message">
+            No products found
+          </div>
+
+          <div v-else class="products-list">
+            <label
+              v-for="product in filteredProducts"
+              :key="product.id"
+              class="product-item"
             >
-            <span class="product-title">{{ product.title }}</span>
-          </label>
+              <input
+                v-model="selectedProducts"
+                type="checkbox"
+                :value="product.id"
+                class="product-checkbox"
+              >
+              <img
+                :src="product.thumbnail"
+                :alt="product.title"
+                class="product-thumbnail"
+              >
+              <span class="product-title">{{ product.title }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="selectedProducts.length > 0" class="selected-products">
+        <h3 class="selected-title">
+          Selected Products:
+        </h3>
+        <div class="selected-products-list">
+          <span
+            v-for="product in selectedProductDetails"
+            :key="product.id"
+            class="selected-product-tag"
+          >
+            {{ product.title }}
+            <button
+              class="remove-product-button"
+              @click="removeProduct(product.id)"
+            >
+              ×
+            </button>
+          </span>
         </div>
       </div>
     </div>
+    <button @click="reset">
+      Reset
+    </button>
+    <button @click="reFetch">
+      Refetch
+    </button>
 
-    <div v-if="selectedProducts.length > 0" class="selected-products">
-      <h3 class="selected-title">
-        Selected Products:
-      </h3>
-      <div class="selected-products-list">
-        <span
-          v-for="product in selectedProductDetails"
-          :key="product.id"
-          class="selected-product-tag"
-        >
-          {{ product.title }}
-          <button
-            class="remove-product-button"
-            @click="removeProduct(product.id)"
-          >
-            ×
-          </button>
-        </span>
-      </div>
-    </div>
-  </div>
+    <progress v-if="isLoading" />
+    <p v-if="hasError">
+      Something filed
+    </p>
+    <ul v-if="data">
+      <li v-for="user in data.users" :key="user.id">
+        {{ user.firstnName }} {{ user.lastName }}
+      </li>
+    </ul>
+  </section>
 </template>
 
 <style scoped>
